@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>英検S-CBT体験版 2級 リスニングテスト（2026年度第2回）</title>
+<style>
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { font-family:"Meiryo","Hiragino Kaku Gothic ProN",sans-serif; background:#eef1f5; color:#222; height:100vh; display:flex; flex-direction:column; overflow:hidden; }
+  header { background:#1b365d; color:#fff; padding:8px 16px; display:flex; justify-content:space-between; align-items:center; border-bottom:3px solid #d97706; }
+  .badge { background:#fff; color:#1b365d; font-weight:bold; padding:2px 8px; border-radius:4px; margin-right:8px; }
+  .btn-end { background:#d9534f; color:#fff; border:none; padding:6px 12px; border-radius:4px; font-weight:bold; cursor:pointer; }
+  .wrap { display:flex; flex:1; overflow:hidden; }
+  .main { flex:1; background:#fff; margin:10px; border:1px solid #c5cdd6; border-radius:6px; display:flex; flex-direction:column; overflow:hidden; }
+  .banner { background:#f4f7fa; border-bottom:1px solid #c5cdd6; padding:10px 16px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; }
+  .status { background:#eef4fb; border:1px solid #b8d0eb; padding:4px 12px; border-radius:16px; font-size:13px; color:#004085; font-weight:bold; }
+  .body { flex:1; padding:20px 26px; overflow-y:auto; }
+  .q-head { font-size:20px; font-weight:bold; color:#1b365d; margin-bottom:8px; display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+  .timer { font-size:14px; background:#fff3cd; color:#856404; border:1px solid #ffeeba; padding:2px 10px; border-radius:4px; }
+  .timer.urgent { background:#f8d7da; color:#721c24; }
+  .viewing-note { font-size:12.5px; background:#e2e8f0; color:#334155; padding:2px 8px; border-radius:4px; font-weight:normal; }
+  .inst { font-size:13px; color:#555; margin-bottom:16px; }
+  .guide-box { background:#f8fafc; border:1px solid #cbd5e1; border-left:5px solid #005bac; padding:16px; border-radius:6px; line-height:1.7; max-width:720px; }
+  .choices { display:flex; flex-direction:column; gap:10px; max-width:720px; }
+  .choice { display:flex; align-items:center; padding:12px 16px; border:2px solid #d0d7de; border-radius:6px; cursor:pointer; font-size:16px; }
+  .choice:hover { background:#f6f9fc; }
+  .choice.selected { background:#dcebff; border-color:#005bac; font-weight:bold; }
+  .c-num { width:26px; height:26px; border-radius:50%; border:1.5px solid #666; display:inline-flex; justify-content:center; align-items:center; margin-right:12px; font-size:14px; flex-shrink:0; }
+  .choice.selected .c-num { background:#005bac; color:#fff; border-color:#005bac; }
+  .audio-bar { margin-top:18px; padding:8px 12px; background:#f1f5f9; border:1px solid #cbd5e1; border-radius:6px; max-width:720px; display:flex; align-items:center; gap:10px; font-size:13px; }
+  .audio-bar audio { height:30px; flex:1; }
+  .footer { border-top:1px solid #c5cdd6; background:#f8f9fa; padding:10px 18px; display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px; }
+  .btn { background:#fff; border:1px solid #99a3ad; padding:7px 14px; border-radius:4px; font-weight:bold; cursor:pointer; }
+  .btn:disabled { opacity:.45; cursor:not-allowed; }
+  .btn-blue { background:#005bac; color:#fff; border:none; padding:7px 16px; border-radius:4px; font-weight:bold; cursor:pointer; }
+  .side { width:260px; background:#fff; margin:10px 10px 10px 0; border:1px solid #c5cdd6; border-radius:6px; display:flex; flex-direction:column; }
+  .side-head { background:#234678; color:#fff; font-weight:bold; font-size:14px; padding:8px; text-align:center; }
+  .side-body { padding:10px; overflow-y:auto; flex:1; }
+  .p-lbl { font-size:12px; font-weight:bold; margin:6px 0; border-bottom:1px solid #ddd; }
+  .grid { display:grid; grid-template-columns:repeat(3,1fr); gap:5px; margin-bottom:10px; }
+  .cell { border:1px solid #bcc5d0; border-radius:4px; font-size:12px; padding:4px 6px; display:flex; justify-content:space-between; cursor:pointer; background:#f9fafb; }
+  .cell.answered { background:#e3f0ff; }
+  .cell.playing { border:2px solid #005bac; background:#eef6ff; }
+  .cell.active { border:2px solid #e86c00; background:#fff8f0; font-weight:bold; }
+  .legend { font-size:11px; color:#555; margin-bottom:8px; display:flex; gap:8px; }
+  .overlay { position:fixed; inset:0; background:rgba(15,30,50,.85); display:flex; justify-content:center; align-items:center; z-index:999; padding:16px; }
+  .modal { background:#fff; max-width:660px; width:100%; border-radius:8px; padding:24px; max-height:92vh; overflow-y:auto; }
+  .modal h2 { color:#1b365d; border-bottom:2px solid #1b365d; padding-bottom:8px; margin-bottom:12px; font-size:19px; }
+  .box { background:#f4f7fa; border:1px solid #c5d3e3; border-radius:6px; padding:12px; margin:12px 0; font-size:13.5px; }
+  .btn-start { width:100%; background:#e86c00; color:#fff; border:none; padding:13px; font-size:16px; font-weight:bold; border-radius:6px; cursor:pointer; margin-top:12px; }
+  .rev { border:1px solid #d0d7de; border-radius:6px; padding:10px 12px; margin-bottom:10px; font-size:13.5px; }
+  .rev.ok { border-left:5px solid #28a745; }
+  .rev.ng { border-left:5px solid #dc3545; }
+  .scr { background:#f8f9fa; padding:8px; border-radius:4px; margin-top:6px; white-space:pre-line; line-height:1.5; }
+  @media(max-width:800px){ body{height:auto;overflow:auto;} .wrap{flex-direction:column;} .side{width:auto;margin:0 10px 16px;} .grid{grid-template-columns:repeat(5,1fr);} }
+</style>
+</head>
+<body>
+
+<div id="startScreen" class="overlay">
+  <div class="modal">
+    <h2>英検S-CBT体験版 2級 リスニングテスト（2026年度第2回）</h2>
+    <p style="font-size:14px;line-height:1.6;">第1部（No.1〜No.15）と第2部（No.16〜No.30）の全30問です。本番と同様に、<strong>別の問題（先読み・見直し）を表示していても現在進行中の音声は途切れず流れ続け、次の問題が始まると自動的にその問題の画面へ戻ります。</strong></p>
+    <div class="box">
+      <div style="margin-bottom:8px;"><label><input type="checkbox" id="skipIntro"> 冒頭の日本語ガイダンスをスキップしてNo.1から開始する</label></div>
+      <div style="margin-bottom:8px;"><label><input type="checkbox" id="practiceMode"> 練習モード（自動進行せず、選んだ問題の音声を個別に再生する）</label></div>
+      <details style="margin-top:8px;">
+        <summary style="cursor:pointer;color:#005bac;">パソコン上の音声ファイルを手動選択する場合</summary>
+        <div style="margin-top:6px;">第1部: <input type="file" id="f1" accept="audio/*"></div>
+        <div style="margin-top:6px;">第2部: <input type="file" id="f2" accept="audio/*"></div>
+      </details>
+    </div>
+    <button type="button" id="btnStartMain" class="btn-start">リスニングテストを開始する（読み込み中...）</button>
+  </div>
+</div>
+
+<div id="resultScreen" class="overlay" style="display:none;">
+  <div class="modal" style="max-width:800px;">
+    <h2>2級 リスニングテスト 採点結果・スクリプト</h2>
+    <div id="resSum" style="background:#eef4fb;padding:14px;border-radius:6px;text-align:center;margin-bottom:14px;font-size:22px;font-weight:bold;color:#1b365d;"></div>
+    <div id="resList"></div>
+    <button type="button" class="btn-start" onclick="location.reload()">最初からやり直す</button>
+  </div>
+</div>
+
+<header>
+  <div><span class="badge">2級</span><strong>英検S-CBT リスニングテスト（2026年度第2回）</strong></div>
+  <div><span style="margin-right:12px;font-size:13px;">進捗: <strong id="cnt">0</strong> / 30</span><button type="button" class="btn-end" id="btnFinish">試験終了・採点</button></div>
+</header>
+
+<div class="wrap">
+  <section class="main">
+    <div class="banner">
+      <strong id="partLbl" style="color:#1b365d;">第1部（対話文）</strong>
+      <div class="status" id="stText">待機中</div>
+    </div>
+    <div class="body">
+      <div class="q-head">
+        <span id="qTitle">試験説明</span>
+        <span id="tmr" class="timer" style="display:none;">解答時間: 10秒</span>
+        <span id="viewNote" class="viewing-note" style="display:none;"></span>
+      </div>
+      <div class="inst" id="qInst">音声の指示に従って進めてください。</div>
+      <div id="guideBox" class="guide-box" style="display:none;"></div>
+      <div id="choicesBox" class="choices"></div>
+      <div class="audio-bar">
+        <span id="audLbl">第1部音声:</span>
+        <audio id="p1" src="part1.mp3" controls preload="auto"></audio>
+        <audio id="p2" src="part2.mp3" controls preload="auto" style="display:none;"></audio>
+      </div>
+    </div>
+    <div class="footer">
+      <div>
+        <button type="button" class="btn" id="btnPrev">◀ 前の問題</button>
+        <button type="button" class="btn" id="btnBackAudio" style="margin-left:8px;display:none;">🔊 放送中の問題へ戻る</button>
+        <button type="button" class="btn" id="btnRep" style="margin-left:8px;display:none;">🔊 頭出し再生</button>
+      </div>
+      <button type="button" class="btn-blue" id="btnNext">次の問題へ ▶</button>
+    </div>
+  </section>
+  <aside class="side">
+    <div class="side-head">あなたの解答</div>
+    <div class="side-body">
+      <div class="legend"><span><strong style="color:#e86c00;">□</strong> 表示中</span><span><strong style="color:#005bac;">□</strong> 音声放送中</span></div>
+      <div class="p-lbl">第1部（No.1 〜 No.15）</div><div class="grid" id="g1"></div>
+      <div class="p-lbl">第2部（No.16 〜 No.30）</div><div class="grid" id="g2"></div>
+    </div>
+  </aside>
+</div>
+
+<script>
+const gText1 = "ただいまから、2級リスニングテストを行います。このテストには、第1部と第2部があります。英文はそれぞれ一度だけ読まれます。では、第1部のテストから始めます。これは、対話を聞き、その質問に対して最も適切な答えを選ぶ形式です。問題は、No.1からNo.15まで15題で、解答時間はそれぞれ10秒です。では、No.1を開始します。";
+const gText2 = "続いて、第2部です。これは英文を聞き、その質問に対して最も適切な答えを選ぶ形式です。英文と質問は一度だけ読まれます。問題はNo.16からNo.30まで15題で、解答時間はそれぞれ10秒です。では、始めます。";
+
+const Q = [
+  {n:1,p:1,s:132,e:171,a:3,c:["Change his gym schedule.","Get a refund.","End his membership.","Find a job in another city."],t:"Woman: Good morning. How can I help you today?\nMan: I'd like to cancel my gym membership. I've moved to another city, so I can't come here anymore.\nWoman: I'm sorry to hear that. If you move back to this area, please come and see us again.\nMan: I will. Thank you for all your help.\nQuestion: What does the man want to do?"},
+  {n:2,p:1,s:171,e:215,a:1,c:["He will ride his bike to school.","He will not go to school today.","He will take the bus today.","He will pick up Sarah."],t:"Man: Hello?\nWoman: Hi, Ben. It's Sarah. Are you going to take the bus to school today?\nMan: Oh, hi, Sarah. No, I'm going to ride my bike. Why? Are you going to take the bus?\nWoman: Yeah. I thought I would call you and see if you wanted to wait for the bus with me.\nMan: Well, the weather is nice, so I decided to get some exercise this morning.\nQuestion: What do we learn about the boy?"},
+  {n:3,p:1,s:215,e:263,a:2,c:["Check how long her flight is.","Cancel her trip to Spain.","Change her seat on the plane.","Book a new ticket to Spain."],t:"Man: Hello. Happy Trails Travel Agency. How may I help you?\nWoman: Hello. My name is Janet Smith. I booked a ticket for a flight to Spain tomorrow morning, but I need to cancel my trip.\nMan: I see. May I ask what the reason is?\nWoman: I have a bad cold, and I don't think I can make the five-hour flight.\nQuestion: What does the woman want to do?"},
+  {n:4,p:1,s:263,e:306,a:2,c:["His truck is too loud.","His truck is in the way.","He damaged her garage.","He spoke rudely to her."],t:"Woman: Sir, please don't park your truck in front of my garage. I can't get my car out.\nMan: Oh! Sorry, I didn't even notice I was blocking you.\nWoman: Well, you've parked there several times in the past.\nMan: I really am sorry, ma'am. I'll be sure to park somewhere else from now on.\nQuestion: Why is the woman upset with the man?"},
+  {n:5,p:1,s:306,e:353,a:4,c:["He got it at a convenience store.","He will sell it to his friend.","He got it for free.","He bought it online."],t:"Woman: Jack, I heard that the tickets for the Rockin' Rollin' Bears concert were sold out. Is that true?\nMan: Yeah. I was lucky to get a ticket. I bought one as soon as they went on sale last month.\nWoman: Where did you buy it?\nMan: I bought it online. I heard that they sold out really quickly at the concert hall and convenience stores.\nQuestion: What does the man say about the concert ticket?"},
+  {n:6,p:1,s:353,e:403,a:4,c:["By going shopping with her.","By picking up some wine.","By cleaning up around the house.","By preparing some of the food."],t:"Man: Hi, Lindsay. Do you need any help with your party after work tonight?\nWoman: Thanks, Tom. Let's see. Could you pick up some wine at the supermarket?\nMan: Sorry, but my car is being repaired, so I'll be taking the bus. Could I come early and help with food? Why don't I make snacks for everybody?\nWoman: Wonderful! That will give me extra time to clean up the house. I'll ask someone else to get wine.\nQuestion: How will the man help the woman?"},
+  {n:7,p:1,s:403,e:451,a:3,c:["A pair of shoes for her friend.","A pair of shoes for her brother.","Shoes that match her dress.","The shoes she ordered last week."],t:"Woman: Excuse me. Do you have these black shoes in size 40?\nMan: I'm sorry, ma'am, they're out of stock. We have the same style in brown, though.\nWoman: Hmm, I don't think that would match my dress.\nMan: Well, if you don't mind waiting, you can order the shoes you like. You could pick them up from our store next week.\nQuestion: What is the woman looking for?"},
+  {n:8,p:1,s:451,e:502,a:2,c:["She is not in his class anymore.","There is no homework for the next class.","He missed an important class.","She will be late for the next class."],t:"Man: Hello, Katy, I went to Professor Anderson's office today, but he wasn't there. I just wanted to check if we had any homework for the next class.\nWoman: Hello, John. I just got home from school. We don't have any homework.\nMan: Oh, great! I was worried that I might have missed something important.\nWoman: No, don't worry. The next class is on Tuesday.\nQuestion: What does Katy tell John?"},
+  {n:9,p:1,s:502,e:557,a:1,c:["The delivery people have not come yet.","Her new refrigerator is not working.","She is leaving her house now.","The delivery people went to the wrong address."],t:"Man: Hello. Dixon's Department Store. Glenn speaking.\nWoman: Hello. This is Jane Parker, and I live at 217 King Street. I was expecting a refrigerator to be delivered by 11 a.m. It's already noon, but nobody has come yet.\nMan: I'm sorry, Ms. Parker. I'll call the delivery people and tell them to go to your place as soon as possible.\nWoman: Well, OK. But I'll only be home until 2 p.m.\nQuestion: What is one thing the woman tells the man?"},
+  {n:10,p:1,s:557,e:604,a:1,c:["Her old umbrella was damaged.","She lost her old umbrella.","Her old umbrella was too small.","She wanted a more expensive one."],t:"Man: Did you buy a new umbrella? I thought you loved your old one.\nWoman: I did. But the wind was so strong yesterday that it broke. I had to throw it away.\nMan: Oh, that's too bad. At least you bought a nice new one.\nWoman: I hope it doesn't break, too. It was quite expensive.\nQuestion: Why did the woman buy a new umbrella?"},
+  {n:11,p:1,s:604,e:651,a:3,c:["He will give it to her later.","He has never read it before.","He wants her to get a new one.","He let his sister borrow it already."],t:"Woman: Here's your book back, Dan.\nMan: What happened to it? The cover is dirty and these pages are falling out.\nWoman: I was riding my bike home and it fell out of my bag. I'll buy you a new one if you want.\nMan: Well, actually, could you do that? It's my sister's book. She'll be angry if I give it back to her like this.\nQuestion: What does the boy say to the girl about the book?"},
+  {n:12,p:1,s:651,e:696,a:1,c:["Keep things they can sell.","Make space in their kitchen.","Start looking for a shop.","Throw away some old clothes."],t:"Woman: What are you doing in the garage, Bob?\nMan: I'm cleaning up. I want to throw away a lot of these things to make more space.\nWoman: Well, don't throw away everything. You should keep anything that we can sell to the secondhand shop, like these old dishes and books.\nMan: OK. I won't throw away things like that.\nQuestion: What does the woman suggest the man do?"},
+  {n:13,p:1,s:696,e:747,a:4,c:["He thinks the Japanese comedies are funny.","He never watches the Japanese news.","It does not teach him about Japanese culture.","It is a good way to learn Japanese."],t:"Woman: Do you understand the Japanese you hear on Japanese TV, Bart?\nMan: I can understand some of the news and the weather report. But I never understand any of the jokes on comedy shows.\nWoman: You probably have to know more about Japanese culture to understand them.\nMan: Still, watching TV is good for my listening skills. I'm sure I'll be able to understand more in the future.\nQuestion: What is one thing the boy says about Japanese TV?"},
+  {n:14,p:1,s:747,e:797,a:4,c:["Red wine is her favorite.","Her friend does not like French wine.","She drank a lot of wine in France.","She does not want to spend too much money."],t:"Woman: Excuse me, sir. I'd like to buy a bottle of red wine for my friend's birthday, but I don't know much about wine. Red is her favorite, though.\nMan: Well, these over here are red wines from France. They're quite popular with our customers.\nWoman: Hmm. Those are a little too expensive for me. Do you have anything cheaper?\nMan: Sure. Let me show you some wines that are on sale.\nQuestion: What is one thing the woman says?"},
+  {n:15,p:1,s:797,e:847,a:1,c:["A call from the front desk.","A bottle of water for breakfast.","A set of towels.","A microwave."],t:"Man: Welcome to the Westmore Hotel.\nWoman: Hello. I'm Linda Davis. I reserved a room for tonight.\nMan: Let me see... yes, you are staying in room 536. Your room comes with a microwave, a coffeepot, and four free bottles of water. If you need extra towels, let us know. Breakfast starts at 7 a.m.\nWoman: Thank you. Please have the front desk give me a wake-up call at 6 a.m.\nQuestion: What does the woman ask the man for?"},
+  {n:16,p:2,s:36,e:88,a:4,c:["The price of T-shirts and other goods.","The opening of the stadium's parking lot.","The closing of a stadium entrance.","The restart of a soccer game."],t:"Man: Attention, soccer fans. The stormy weather is clearing up now, so the players will be coming back onto the field in a few minutes. While you wait, you can buy food and drinks from the sellers inside the stadium. Also, the souvenir shop by the west entrance will stay open for an hour after the game ends for anyone wanting to purchase T-shirts and other goods.\nQuestion: What is one thing the announcement is explaining?"},
+  {n:17,p:2,s:88,e:138,a:4,c:["By buying an item at the shop.","By waiting at the side entrance.","By making a reservation online.","By going to the gift shop."],t:"Woman: Welcome to the Grandville Art Museum. This is the main entrance. To the left of the entrance is the board that shows the schedule of guided tours. If you would like to join one of our tours, please go to the gift shop and let the staff know. You can get a ticket for the tour there. The guided tours are very popular, so please get your ticket early.\nQuestion: How can visitors join a guided tour?"},
+  {n:18,p:2,s:138,e:193,a:4,c:["The jacket was not the right size.","The jacket was not exchanged online.","The jacket was not made well.","The jacket was the wrong color."],t:"Woman: Sarah saw a nice jacket on an online shopping website. It was a little expensive, but she decided to buy it. When the jacket arrived, however, she was disappointed because it was not the right color. She called the company that ran the online shopping website, but they told her that they could not exchange it. Sarah learned her lesson and bought the same jacket at a local clothing store.\nQuestion: Why was Sarah disappointed?"},
+  {n:19,p:2,s:193,e:247,a:3,c:["Visit the hospital in person.","Speak to a doctor immediately.","Have their insurance cards ready.","Send a text message."],t:"Woman: Thank you for calling Mapleton Hospital. We are currently experiencing a very high volume of calls, so please be patient. If you would like to book an appointment with a doctor, please have your insurance card ready and be prepared to provide some basic information. For all other inquiries, please leave a message after the beep, and we will get back to you as soon as possible.\nQuestion: What is one thing people should do to book an appointment?"},
+  {n:20,p:2,s:247,e:299,a:1,c:["They won a talent show.","They opened a coffee shop.","They performed at a charity event.","They played at a piano recital."],t:"Woman: Sally and her three friends like to sing together. Last week, they entered their town's talent show. Sally played the piano while her friends sang. They won first prize, and their prize was a gift certificate for a coffee shop. They went there to celebrate together. After that, they decided to perform at a local charity event next month.\nQuestion: What did Sally and her friends do last week?"},
+  {n:21,p:2,s:299,e:350,a:1,c:["She was going to perform in her school talent show.","She was going to sing with her teacher.","Her friend Dan bought her a guitar.","Her teacher asked her to play music in class."],t:"Woman: Emily enjoys playing the guitar, and she was excited because she was going to perform in her school's talent show. She asked her friend Dan to sing with her. They practiced every day after school. On the day of the talent show, Emily was nervous, but when she got on stage, she felt happy and relaxed. The audience enjoyed their performance, and they got a big round of applause.\nQuestion: Why was Emily excited?"},
+  {n:22,p:2,s:350,e:398,a:2,c:["At the Fun World ticket office.","At the park entrance.","In front of the park's mascot shop.","Next to the park's main stage."],t:"Man: Welcome to Fun World. We would like to remind visitors that the park's mascot, Mr. Puppy, will be at the entrance for photo opportunities from 10 a.m. to 4 p.m. Please do not try to take photos of Mr. Puppy outside of these times. Also, we would like to ask visitors to keep their tickets with them at all times. Thank you.\nQuestion: Where can visitors take photos with Mr. Puppy?"},
+  {n:23,p:2,s:398,e:451,a:2,c:["They stopped playing soccer.","They chose a time to play soccer.","They started studying together.","They asked their teacher for help."],t:"Man: John and his friends like to play soccer together, but recently they have not had much time. Last month, they decided to set a time when they could always play together. They agreed on Sunday afternoons, but when the first Sunday came, John had to study for a test, so they moved their game to Sunday morning instead. Now, they play soccer every Sunday morning, no matter what.\nQuestion: How did John and his friends solve their problem?"},
+  {n:24,p:2,s:451,e:500,a:2,c:["Her office moved to another place.","She did not catch her train.","Her car broke down.","The train stopped due to an accident."],t:"Woman: Maria lives in a small town, but she works in the city. Every day, she drives to the nearest train station and takes a train to her office. Yesterday, she got to the station late and missed her train. She had to drive all the way to her office. It took a long time, and she got stuck in traffic, so she was very late.\nQuestion: Why was Maria late for work yesterday?"},
+  {n:25,p:2,s:500,e:557,a:1,c:["He wanted to check its size.","He wanted a backpack for another purpose.","He liked the store's website design.","He could find low prices online."],t:"Man: Adam wanted to buy a new backpack for school. At first, he thought he would buy one online because there are many websites that sell backpacks at low prices. However, he was not sure if the backpack he wanted would be big enough for his books. In the end, he bought a backpack at a store near his home. It was a little more expensive, but it was the right size for him.\nQuestion: Why did Adam buy a backpack at a store instead of online?"},
+  {n:26,p:2,s:557,e:610,a:1,c:["Her brother often takes her belongings.","Her brother does not clean his room.","Her brother dislikes her toys.","Her brother does not do his homework."],t:"Man: Emily has a younger brother named Sam. He is very curious and always wants to play with Emily's toys. Emily gets frustrated because Sam often takes her things without asking. Her mother told her that she should teach Sam to ask before taking anything. She decided to explain to him that taking things without permission is not polite, and that she will let him play with her toys if he asks first.\nQuestion: Why does Emily get frustrated?"},
+  {n:27,p:2,s:610,e:662,a:3,c:["His mother works at the store.","He wanted to try a new phone for a week.","His mother told him to get it fixed there.","The shop gave him money to pay for it."],t:"Man: Ethan dropped his phone last week, and the screen broke. He thought about buying a new phone, but his mother advised him that he should get his phone fixed at a store. Ethan went to a shop in the mall, and they fixed his phone for a lot less money than a new one would have cost. Now, he is more careful when he uses his phone.\nQuestion: Why did Ethan get his phone screen fixed at a store?"},
+  {n:28,p:2,s:662,e:718,a:2,c:["She is drawing pictures of road signs many times.","She is studying using a quiz her sister made.","She is practicing driving with her sister.","She is looking at road signs in her town."],t:"Woman: Anna is studying for her driver's license test. She has to learn a lot of information, such as the meanings of different road signs. Her sister wanted to help her, so she made a quiz for Anna to practice with. The quiz had questions about road signs and other things that Anna needed to know. Thanks to her sister, Anna is studying more easily and having more fun.\nQuestion: How is Anna studying for her driver's license test?"},
+  {n:29,p:2,s:718,e:771,a:2,c:["His friends study soccer history during the week.","He has to study and work during the week.","He lives far from the soccer stadium.","His part-time job is at a soccer club."],t:"Man: Tom loves soccer, but he is too busy to play during the week. He has to study for exams and work part-time at a restaurant. However, he and his friends play soccer every Sunday morning. They play for a few hours and then have lunch together. Tom enjoys playing soccer with his friends, and he is glad that they can find time to do it on the weekend.\nQuestion: Why does Tom only play soccer on Sundays?"},
+  {n:30,p:2,s:771,e:825,a:1,c:["Get better at drawing pictures.","Become a professional artist.","Draw pictures of professional artists.","Meet other people who like buildings."],t:"Man: John likes to draw pictures. His favorite things to draw are buildings and trees. He wants to improve his drawing, so he has decided to take art classes at a community center. He has signed up for classes on Wednesday evenings. He is looking forward to learning from a professional artist and meeting other people who also like to draw.\nQuestion: What does John want to do?"}
+];
+
+// viewIdx: 今画面に表示している問題(0-29) / audioIdx: 今音声が流れている問題(0-29)
+let viewIdx = 0, audioIdx = 0, ans = new Array(30).fill(null), mp3_1 = true, mp3_2 = true;
+let prac = false, audioIsGuide = false, gPart = 1, tmrId = null, monId = null, secLeft = 10;
+const p1 = document.getElementById("p1"), p2 = document.getElementById("p2");
+p1.onerror = () => { mp3_1 = false; };
+p2.onerror = () => { mp3_2 = false; };
+
+function playAt(el, sec, okCb, errCb) {
+  const run = () => {
+    try { el.currentTime = sec; } catch(e) {}
+    const pr = el.play();
+    if (pr && pr.then) pr.then(() => okCb && okCb()).catch(e => errCb && errCb(e));
+    else if (okCb) okCb();
+  };
+  if (el.readyState >= 1) run();
+  else { el.addEventListener("loadedmetadata", run, {once:true}); el.load(); }
+}
+
+function stopAudioOnly() {
+  clearInterval(tmrId); clearInterval(monId);
+  p1.pause(); p2.pause();
+  if ("speechSynthesis" in window) speechSynthesis.cancel();
+  const t = document.getElementById("tmr");
+  t.style.display = "none"; t.classList.remove("urgent");
+}
+
+function showPartAudio(p) {
+  document.getElementById("audLbl").textContent = p === 1 ? "第1部音声:" : "第2部音声:";
+  p1.style.display = p === 1 ? "block" : "none";
+  p2.style.display = p === 2 ? "block" : "none";
+}
+
+function buildGrid() {
+  const g1 = document.getElementById("g1"), g2 = document.getElementById("g2");
+  g1.innerHTML = ""; g2.innerHTML = "";
+  Q.forEach((q, i) => {
+    const d = document.createElement("div");
+    d.className = "cell"; d.id = "c-" + i;
+    d.innerHTML = "<span id='lbl-" + i + "'>" + q.n + "</span><span id='a-" + i + "' style='font-weight:bold;color:#005bac;'>-</span>";
+    d.onclick = () => {
+      if (prac) startAudioAndView(i);
+      else renderView(i); // 本番モードでは表示だけ切り替え、音声は変えない
+    };
+    (q.p === 1 ? g1 : g2).appendChild(d);
+  });
+}
+
+function updateGridHighlight() {
+  Q.forEach((q, i) => {
+    const cell = document.getElementById("c-" + i);
+    const lbl = document.getElementById("lbl-" + i);
+    if (!cell) return;
+    cell.classList.toggle("active", i === viewIdx);
+    const isPlaying = !audioIsGuide && i === audioIdx;
+    cell.classList.toggle("playing", isPlaying);
+    lbl.textContent = isPlaying ? ("🔊" + q.n) : q.n;
+  });
+}
+
+// 画面だけ切り替える（音声には一切触れない）
+function renderView(i) {
+  if (i < 0 || i >= 30) return;
+  viewIdx = i;
+  document.getElementById("guideBox").style.display = "none";
+  const q = Q[i];
+  document.getElementById("partLbl").textContent = q.p === 1 ? "第1部（対話文：No.1〜No.15）" : "第2部（英文説明・物語：No.16〜No.30）";
+  document.getElementById("qTitle").textContent = "No. " + q.n;
+  document.getElementById("qInst").textContent = q.p === 1 ? "対話を聞き、質問に対して最も適切な答えを1〜4から選びなさい。" : "英文を聞き、質問に対して最も適切な答えを1〜4から選びなさい。";
+
+  // 放送中の問題と違う問題を見ている場合の表示
+  const note = document.getElementById("viewNote");
+  const backBtn = document.getElementById("btnBackAudio");
+  if (!prac && (audioIsGuide || viewIdx !== audioIdx)) {
+    note.style.display = "inline-block";
+    note.textContent = audioIsGuide ? "※ 現在ガイダンス放送中（先読み閲覧中）" : ("※ 現在 No." + (audioIdx + 1) + " の音声を放送中");
+    backBtn.style.display = audioIsGuide ? "none" : "inline-block";
+  } else {
+    note.style.display = "none";
+    backBtn.style.display = "none";
+  }
+
+  const box = document.getElementById("choicesBox"); box.innerHTML = "";
+  q.c.forEach((txt, ci) => {
+    const num = ci + 1;
+    const el = document.createElement("div");
+    el.className = "choice" + (ans[i] === num ? " selected" : "");
+    el.innerHTML = "<span class='c-num'>" + num + "</span><span>" + txt + "</span>";
+    el.onclick = () => {
+      ans[i] = num;
+      document.querySelectorAll(".choice").forEach((x, k) => x.classList.toggle("selected", k + 1 === num));
+      document.getElementById("a-" + i).textContent = num;
+      document.getElementById("c-" + i).classList.add("answered");
+      document.getElementById("cnt").textContent = ans.filter(v => v !== null).length;
+    };
+    box.appendChild(el);
+  });
+
+  document.getElementById("btnPrev").disabled = i === 0;
+  document.getElementById("btnNext").textContent = i === 29 ? "採点する" : "次の問題へ ▶";
+  updateGridHighlight();
+  const ac = document.getElementById("c-" + i);
+  if (ac) ac.scrollIntoView({block:"nearest"});
+}
+
+// ガイダンス画面表示＆再生
+function showGuideView(part) {
+  document.getElementById("partLbl").textContent = "第" + part + "部 試験説明（日本語ガイダンス）";
+  document.getElementById("qTitle").textContent = "2級 リスニングテスト 第" + part + "部 ガイダンス";
+  document.getElementById("qInst").textContent = "ガイダンス終了後に自動で問題へ進みます（先読みも可能です）。";
+  document.getElementById("viewNote").style.display = "none";
+  document.getElementById("btnBackAudio").style.display = "none";
+  document.getElementById("choicesBox").innerHTML = "";
+  const gb = document.getElementById("guideBox");
+  gb.style.display = "block"; gb.textContent = part === 1 ? gText1 : gText2;
+  document.getElementById("btnPrev").disabled = true;
+  document.getElementById("btnNext").textContent = "No." + (part === 1 ? 1 : 16) + " を先読みする ▶";
+}
+
+function startGuideAudio(part) {
+  stopAudioOnly();
+  audioIsGuide = true; gPart = part;
+  const target = part === 1 ? 0 : 15;
+  audioIdx = target; viewIdx = target;
+  showPartAudio(part);
+  showGuideView(part);
+  updateGridHighlight();
+  document.getElementById("stText").textContent = "第" + part + "部 ガイダンス放送中...";
+
+  const useMp3 = part === 1 ? mp3_1 : mp3_2;
+  const pl = part === 1 ? p1 : p2;
+  const endGuideSec = part === 1 ? 132 : 36;
+
+  if (useMp3) {
+    playAt(pl, 0, () => { document.getElementById("stText").textContent = "公式音声再生中（第" + part + "部ガイダンス）"; }, () => speakGuide(part, target));
+    monId = setInterval(() => {
+      if (!pl.paused && pl.currentTime >= endGuideSec) {
+        clearInterval(monId);
+        audioIsGuide = false;
+        startAudioAndView(target); // ガイダンス終了で自動的にNo.1(またはNo.16)の画面＆音声へ戻る
+      }
+    }, 250);
+  } else {
+    speakGuide(part, target);
+  }
+}
+
+function speakGuide(part, target) {
+  if ("speechSynthesis" in window) {
+    speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(part === 1 ? gText1 : gText2);
+    u.lang = "ja-JP"; u.rate = 1.05;
+    u.onend = () => { audioIsGuide = false; startAudioAndView(target); };
+    speechSynthesis.speak(u);
+  } else {
+    setTimeout(() => { audioIsGuide = false; startAudioAndView(target); }, 3000);
+  }
+}
+
+// 音声を新しい問題に切り替えると同時に、画面も自動的にその問題へ戻す
+function startAudioAndView(i) {
+  if (i < 0 || i >= 30) return;
+  stopAudioOnly();
+  audioIsGuide = false;
+  audioIdx = i;
+  renderView(i); // 必ず音声の問題番号に画面を戻す
+
+  const q = Q[i];
+  showPartAudio(q.p);
+  const useMp3 = q.p === 1 ? mp3_1 : mp3_2;
+  const pl = q.p === 1 ? p1 : p2;
+
+  if (useMp3) {
+    document.getElementById("stText").textContent = "公式音声放送中（No." + q.n + "）";
+    playAt(pl, q.s, null, () => speakQ(q));
+    monId = setInterval(() => {
+      if (pl.paused) return;
+      if (pl.currentTime >= q.e - 10 && document.getElementById("tmr").style.display === "none") {
+        document.getElementById("stText").textContent = "No." + q.n + " 解答時間（10秒）";
+        if (!prac) startTmr(false);
+      }
+      if (pl.currentTime >= q.e) {
+        pl.pause(); clearInterval(monId);
+        if (!prac) nextAuto();
+      }
+    }, 250);
+  } else {
+    speakQ(q);
+  }
+}
+
+function speakQ(q) {
+  if (!("speechSynthesis" in window)) return;
+  speechSynthesis.cancel();
+  document.getElementById("stText").textContent = "自動音声放送中（No." + q.n + "）";
+  const lines = q.t.split("\n");
+  let li = 0;
+  const nextL = () => {
+    if (li >= lines.length) {
+      document.getElementById("stText").textContent = "No." + q.n + " 解答時間（10秒）";
+      if (!prac) startTmr(true);
+      return;
+    }
+    const u = new SpeechSynthesisUtterance(lines[li].replace(/^(Man|Woman|Question):\s*/, ""));
+    u.lang = "en-US"; u.rate = 0.96;
+    u.onend = () => { li++; setTimeout(nextL, 300); };
+    speechSynthesis.speak(u);
+  };
+  nextL();
+}
+
+function startTmr(autoGo) {
+  clearInterval(tmrId); secLeft = 10;
+  const t = document.getElementById("tmr");
+  t.style.display = "inline-block"; t.classList.remove("urgent"); t.textContent = "No." + (audioIdx + 1) + " 解答時間: 10秒";
+  tmrId = setInterval(() => {
+    secLeft--;
+    if (secLeft <= 3) t.classList.add("urgent");
+    t.textContent = "No." + (audioIdx + 1) + " 解答時間: " + Math.max(0, secLeft) + "秒";
+    if (secLeft <= 0) { clearInterval(tmrId); if (autoGo) nextAuto(); }
+  }, 1000);
+}
+
+function nextAuto() {
+  if (audioIdx === 14 && !document.getElementById("skipIntro").checked) {
+    startGuideAudio(2);
+    return;
+  }
+  audioIdx < 29 ? startAudioAndView(audioIdx + 1) : finish();
+}
+
+function finish() {
+  stopAudioOnly();
+  let sc = 0; const list = document.getElementById("resList"); list.innerHTML = "";
+  Q.forEach((q, i) => {
+    const u = ans[i], ok = u === q.a; if (ok) sc++;
+    const d = document.createElement("div"); d.className = "rev " + (ok ? "ok" : "ng");
+    d.innerHTML = "<strong>No." + q.n + "（第" + q.p + "部）: " + (ok ? "○ 正解" : "× 不正解") + "</strong><br>"
+      + "あなたの解答: " + (u ? u + ". " + q.c[u-1] : "未解答") + " / 正解: " + q.a + ". " + q.c[q.a-1]
+      + "<div class='scr'>" + q.t + "</div>";
+    list.appendChild(d);
+  });
+  document.getElementById("resSum").textContent = sc + " / 30 問正解（正答率 " + Math.round(sc/30*100) + "%）";
+  document.getElementById("resultScreen").style.display = "flex";
+}
+
+const startBtn = document.getElementById("btnStartMain");
+startBtn.textContent = "リスニングテストを開始する";
+startBtn.onclick = () => {
+  const f1 = document.getElementById("f1").files[0], f2 = document.getElementById("f2").files[0];
+  if (f1) { p1.src = URL.createObjectURL(f1); mp3_1 = true; }
+  if (f2) { p2.src = URL.createObjectURL(f2); mp3_2 = true; }
+  prac = document.getElementById("practiceMode").checked;
+  if (prac) document.getElementById("btnRep").style.display = "inline-block";
+  document.getElementById("startScreen").style.display = "none";
+  buildGrid();
+  document.getElementById("skipIntro").checked ? startAudioAndView(0) : startGuideAudio(1);
+};
+
+// ナビボタン：本番モードでは「画面表示だけ」切り替え、音声は止めない
+document.getElementById("btnPrev").onclick = () => {
+  if (prac) startAudioAndView(viewIdx - 1);
+  else renderView(viewIdx - 1);
+};
+document.getElementById("btnNext").onclick = () => {
+  if (audioIsGuide && document.getElementById("guideBox").style.display === "block") {
+    renderView(gPart === 1 ? 0 : 15); // ガイダンス中にNo.1またはNo.16の選択肢を先読み表示（音声はガイダンス継続）
+    return;
+  }
+  if (prac) {
+    viewIdx < 29 ? startAudioAndView(viewIdx + 1) : finish();
+  } else {
+    viewIdx < 29 ? renderView(viewIdx + 1) : (confirm("試験を終了して採点しますか？") && finish());
+  }
+};
+document.getElementById("btnBackAudio").onclick = () => renderView(audioIdx);
+document.getElementById("btnRep").onclick = () => audioIsGuide ? startGuideAudio(gPart) : startAudioAndView(viewIdx);
+document.getElementById("btnFinish").onclick = () => { if (confirm("試験を終了して採点しますか？")) finish(); };
+</script>
+</body>
+</html>
